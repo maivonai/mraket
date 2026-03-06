@@ -4,77 +4,125 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TON Маркет</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #111; color: #fff; padding: 20px; max-width: 600px; margin: 0 auto; }
-    h1 { text-align: center; }
-    .product { background: #222; padding: 15px; margin: 15px 0; border-radius: 12px; }
-    button { background: #00ff9d; color: #000; border: none; padding: 12px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-    button:disabled { background: #555; }
-    #status { margin-top: 20px; padding: 15px; background: #333; border-radius: 8px; font-weight: bold; }
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .product-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 255 157 / 0.2); }
+    .neon-text { text-shadow: 0 0 15px rgb(0 255 157); }
   </style>
 </head>
-<body>
-  <h1>🎉 TON Маркет</h1>
-  <p style="text-align:center;">Простой магазин. Подключи кошелёк и покупай за TON!</p>
+<body class="bg-zinc-950 text-white min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-12 border-b border-zinc-800 pb-6">
+      <div>
+        <h1 class="text-5xl font-bold neon-text tracking-tighter">TON МАРКЕТ</h1>
+        <p class="text-emerald-400 text-sm mt-1">Покупай мгновенно • Деньги сразу на мой кошелёк</p>
+      </div>
+      <div id="connect-btn" class="flex items-center gap-3"></div>
+    </div>
 
-  <div id="connect-btn"></div>
+    <!-- Hero -->
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 bg-zinc-900 border border-emerald-500/30 rounded-full px-6 py-2 text-sm mb-4">
+        <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+        Работает на TON Blockchain
+      </div>
+      <h2 class="text-4xl font-semibold mb-3">Выбирай товар — плати TON</h2>
+      <p class="text-zinc-400 max-w-md mx-auto">Подключи Tonkeeper или Telegram Wallet и покупай за секунды</p>
+    </div>
 
-  <div id="products">
-    <!-- товары добавятся через JS -->
+    <!-- Products -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="products">
+      <!-- Карточки добавятся через JS -->
+    </div>
+
+    <!-- Status -->
+    <div id="status" class="mt-12 max-w-md mx-auto text-center p-6 rounded-2xl bg-zinc-900 border border-zinc-800 hidden">
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-20 text-center text-zinc-500 text-sm">
+      Все платежи идут напрямую на мой кошелёк<br>
+      <span class="text-emerald-400">UQDLUQwxUttwdqd4VBOpqAAHwzPH_O7QTCVhCceKuDyh-DKI</span>
+    </div>
   </div>
 
-  <div id="status"></div>
-
   <script>
-    // ←←← ВСТАВЬ СВОЙ КОШЕЛЁК ЗДЕСЬ ↓↓↓
-    const YOUR_WALLET = 'EQ...твой_EQ_адрес_кошелька_сюда...';
+    // ТВОЙ КОШЕЛЁК (уже вставлен)
+    const YOUR_WALLET = 'UQDLUQwxUttwdqd4VBOpqAAHwzPH_O7QTCVhCceKuDyh-DKI';
 
     const products = [
-      { id: 1, name: 'Крутая футболка', price: 2.5, desc: 'Ограниченная серия' },
-      { id: 2, name: 'Подписка на 1 месяц', price: 1.0, desc: 'Премиум-доступ' },
-      { id: 3, name: 'NFT-картинка', price: 5.0, desc: 'Уникальный арт' },
+      { id: 1, name: 'TON Футболка', price: 2.5, desc: 'Ограниченная серия • Чёрный неон', img: 'https://picsum.photos/id/1015/600/400' },
+      { id: 2, name: 'Премиум подписка', price: 1.0, desc: '1 месяц эксклюзивного контента', img: 'https://picsum.photos/id/201/600/400' },
+      { id: 3, name: 'Эксклюзивный NFT', price: 5.0, desc: 'Уникальный цифровой арт', img: 'https://picsum.photos/id/30/600/400' },
+      { id: 4, name: 'TON Худи', price: 3.5, desc: 'Тёплый мерч с неоновой вышивкой', img: 'https://picsum.photos/id/160/600/400' }
     ];
+
+    // Инициализация Tailwind
+    function initTailwind() {
+      // уже работает через CDN
+    }
 
     // Инициализация TON Connect
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://твой-юзернейм.github.io/ton-market/tonconnect-manifest.json',
+      manifestUrl: 'https://maivonai.github.io/mraket/tonconnect-manifest.json',
       buttonRootId: 'connect-btn',
       actionsConfiguration: {
-        twaReturnUrl: 'https://t.me/ТВОЙ_БОТ_USERNAME'  // замени на свой бот
+        twaReturnUrl: 'https://t.me/ТВОЙ_БОТ_USERNAME'   // ←←← ЗАМЕНИ НА СВОЙ БОТ!!!
       }
     });
 
     let isConnected = false;
 
-    // Обновление статуса подключения
     tonConnectUI.onStatusChange(wallet => {
       isConnected = !!wallet;
       if (isConnected) {
-        document.getElementById('status').innerHTML = '✅ Кошелёк подключён';
+        showStatus('✅ Кошелёк подключён', 'emerald');
       }
     });
 
-    // Создаём карточки товаров
+    function showStatus(text, color = 'emerald') {
+      const statusEl = document.getElementById('status');
+      statusEl.className = `mt-12 max-w-md mx-auto text-center p-6 rounded-2xl bg-zinc-900 border border-${color}-500/30 flex items-center gap-3`;
+      statusEl.innerHTML = `
+        <div class="flex-1 text-left">${text}</div>
+      `;
+      statusEl.classList.remove('hidden');
+      setTimeout(() => statusEl.classList.add('hidden'), 8000);
+    }
+
     function renderProducts() {
       const container = document.getElementById('products');
       container.innerHTML = '';
       
       products.forEach(product => {
         const div = document.createElement('div');
-        div.className = 'product';
+        div.className = 'product-card bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden';
         div.innerHTML = `
-          <h3>${product.name}</h3>
-          <p>${product.desc}</p>
-          <strong>${product.price} TON</strong><br>
-          <button onclick="buy(${product.id})">Купить за ${product.price} TON</button>
+          <img src="${product.img}" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <h3 class="text-2xl font-semibold mb-1">${product.name}</h3>
+            <p class="text-zinc-400 text-sm mb-4">${product.desc}</p>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-3xl font-bold text-emerald-400">${product.price}</span>
+                <span class="text-zinc-500 ml-1">TON</span>
+              </div>
+              <button onclick="buy(${product.id})" 
+                      class="bg-emerald-500 hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-2xl transition">
+                Купить
+              </button>
+            </div>
+          </div>
         `;
         container.appendChild(div);
       });
     }
 
-    // Функция покупки
-    async function buy(productId) {
+    window.buy = async function(productId) {
       const product = products.find(p => p.id === productId);
       if (!product) return;
 
@@ -87,18 +135,18 @@
         validUntil: Math.floor(Date.now() / 1000) + 300,
         messages: [{
           address: YOUR_WALLET,
-          amount: (product.price * 1e9).toString()  // переводим в нанотоны
+          amount: (product.price * 1_000_000_000).toString()
         }]
       };
 
       try {
-        document.getElementById('status').innerHTML = `Отправка ${product.price} TON за "${product.name}"...`;
+        showStatus(`Отправляем ${product.price} TON за "${product.name}"...`, 'yellow');
         await tonConnectUI.sendTransaction(transaction);
-        document.getElementById('status').innerHTML = `✅ Успешно! ${product.price} TON отправлено тебе.<br>Проверь на tonviewer.io`;
+        showStatus(`✅ Успешно! ${product.price} TON уже у тебя на кошельке.<br>Спасибо за покупку!`, 'emerald');
       } catch (e) {
-        document.getElementById('status').innerHTML = '❌ Отменено или ошибка';
+        showStatus('❌ Платёж отменён или произошла ошибка', 'red');
       }
-    }
+    };
 
     // Запуск
     renderProducts();
